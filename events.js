@@ -40,7 +40,7 @@ var attackEvent = myAttack.DefaultFunc();
 attackEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
-      console.log("Caller:" + result.args.caller + " amount: " + result.args.amount + " wei");
+      console.log("Default func called from:" + result.args.caller + " amount: " + result.args.amount + " wei");
       console.log("*********************************************************************************");
     }
     else {

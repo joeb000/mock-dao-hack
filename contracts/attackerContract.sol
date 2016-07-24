@@ -4,7 +4,6 @@ contract attacker {
   event DefaultFunc(address caller, uint amount);
 
   address public daoAddress;
-
   address public transferAddress;
 
   uint[] public arr;
@@ -45,5 +44,8 @@ contract attacker {
 
   function setDAOAddress(address _dao){
     daoAddress=_dao;
+  }
+  function setTransferAddress(address _transferAddress){
+    transferAddress=_transferAddress;
   }
 }
