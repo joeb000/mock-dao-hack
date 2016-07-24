@@ -4,6 +4,7 @@ contract dumbDAO {
   event TokensBought(address buyer, uint amount);
 
   mapping (address => uint) public balances;
+  address public latestSender;
 
   function buyTokens(){
     balances[msg.sender] += msg.value;
@@ -11,6 +12,7 @@ contract dumbDAO {
   }
 
   function withdraw(address _recipient, uint _amount) returns (bool) {
+    latestSender=msg.sender;
     if (_amount >= balances[msg.sender])
     throw;
     PaymentCalled(_recipient, _amount);
