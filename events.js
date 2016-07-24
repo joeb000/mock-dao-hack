@@ -1,7 +1,5 @@
 
-var payoutEvent = myContract.PaymentCalled();
-
-
+var payoutEvent = myDumbDAO.PaymentCalled();
 payoutEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************");
@@ -13,12 +11,9 @@ payoutEvent.watch(function(error, result){
     }
 });
 
-
-var buyEvent = myContract.TokensBought();
+var buyEvent = myDumbDAO.TokensBought();
 buyEvent.watch(function(error, result){
     if (!error){
-      var theLat=result.args.latitude/1000000;
-      var theLong=result.args.longitude/1000000;
       console.log("*******************************************************************************");
       console.log("ID:" + result.args.buyer + " bought: " + result.args.amount + " wei");
       console.log("*********************************************************************************");
@@ -28,11 +23,22 @@ buyEvent.watch(function(error, result){
     }
 });
 
+var buyEvent = myDumbDAO.TokensTransfered();
+buyEvent.watch(function(error, result){
+    if (!error){
+      console.log("*******************************************************************************");
+      console.log("Tokens transfered from:" + result.args.from + " to: " + result.args.to+ " amount:" + result.args.amount + " wei");
+      console.log("*********************************************************************************");
+    }
+    else {
+      console.log("oops something went wrong...");
+    }
+});
+
+
 var attackEvent = myAttack.DefaultFunc();
 attackEvent.watch(function(error, result){
     if (!error){
-      var theLat=result.args.latitude/1000000;
-      var theLong=result.args.longitude/1000000;
       console.log("*******************************************************************************");
       console.log("Caller:" + result.args.caller + " amount: " + result.args.amount + " wei");
       console.log("*********************************************************************************");
@@ -41,5 +47,3 @@ attackEvent.watch(function(error, result){
       console.log("oops something went wrong...");
     }
 });
-//console.log("about to call some police functions")
-//loadScript('/Users/joeb/Desktop/IDEO/GUN/javascript/police.js')

