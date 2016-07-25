@@ -9,7 +9,7 @@ cd $SOLCFILEPATH/..
 mkdir -p deploy
 WORKING_DIR=`pwd`/deploy
 CONTRACT_EXT="${SOLCFILENAME#*.}"
-CONTRACT_NAME="${SOLCFILENAME%.*}"
+CONTRACT_NAME=`echo ${SOLCFILENAME%.*} | tr '[:upper:]' '[:lower:]'`
 DEPLOY_SCRIPT=$WORKING_DIR/deploy_$CONTRACT_NAME.js
 
 cd $SOLCFILEPATH
