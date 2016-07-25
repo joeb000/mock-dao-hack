@@ -36,7 +36,7 @@ buyEvent.watch(function(error, result){
 });
 
 
-var attackEvent = attack.DefaultFunc();
+var attackEvent = attacker.DefaultFunc();
 attackEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
