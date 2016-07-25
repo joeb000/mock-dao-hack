@@ -24,11 +24,16 @@ printf "%s" `cat $WORKING_DIR/tmp/$CONTRACT_NAME.abi` >> $DEPLOY_SCRIPT
 printf "%s" ");" >> $DEPLOY_SCRIPT
 echo " " >> $DEPLOY_SCRIPT
 echo " " >> $DEPLOY_SCRIPT
+printf "%s" "var gasEstimate = web3.eth.estimateGas({ from: web3.eth.accounts[0], data:'" >> $DEPLOY_SCRIPT
+printf "%s" `cat $WORKING_DIR/tmp/$CONTRACT_NAME.bin` >> $DEPLOY_SCRIPT
+printf "%s" "' })" >> $DEPLOY_SCRIPT
+echo " " >> $DEPLOY_SCRIPT
+echo " " >> $DEPLOY_SCRIPT
 printf "%s" "var ${CONTRACT_NAME} = ${CONTRACT_NAME}Contract.new({" >> $DEPLOY_SCRIPT
 printf "%s" " from: web3.eth.accounts[0]," >> $DEPLOY_SCRIPT
 printf "%s" " data: '" >> $DEPLOY_SCRIPT
 printf "%s" `cat $WORKING_DIR/tmp/$CONTRACT_NAME.bin` >> $DEPLOY_SCRIPT
-printf "%s" "', gas: 4700000  }, function (e, contract){" >> $DEPLOY_SCRIPT
+printf "%s" "', gas: gasEstimate  }, function (e, contract){" >> $DEPLOY_SCRIPT
 printf "%s" "    console.log(e, contract);" >> $DEPLOY_SCRIPT
 printf "%s" " if (typeof contract.address !== 'undefined') {" >> $DEPLOY_SCRIPT
 printf "%s" " console.log('Deployed Contract ${CONTRACT_NAME} mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);}})" >> $DEPLOY_SCRIPT
