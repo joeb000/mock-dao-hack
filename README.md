@@ -49,5 +49,7 @@ https://www.reddit.com/r/ethereum/comments/4os7l5/the_big_thedao_heist_faq/
 
 In depth Analysis:
 http://vessenes.com/deconstructing-thedao-attack-a-brief-code-tour/
+
 http://hackingdistributed.com/2016/06/18/analysis-of-the-dao-exploit/
+
 https://pdaian.com/blog/chasing-the-dao-attackers-wake/
