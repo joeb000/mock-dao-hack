@@ -13,6 +13,10 @@ If this runs correctly it should output a `loadScript` function call with the di
 You should be able to copy and paste this straight into your geth console to deploy the contract. Once it is mined you'll see a log message confirming that the contract mined correctly. The contract javascript var is its name (`dumbDAO`). Deploy both contracts (doesn't really matter what order).
 
 Once they are both deployed, lets set a few things up before executing the exploit...
+Optional: run the event listener javascript file - sometimes its helpful to have feedback on the javascript console about which events are runnning:
+
+        loadScript('/Path/to/your/ws/mock-dao-hack/events.js');
+
 First, buy some DAO tokens as an innocent investor (adjust `eth.accounts[0]` as necessary).
 
     //buy 100 ether worth of DAO tokens
