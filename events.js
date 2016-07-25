@@ -1,5 +1,5 @@
 
-var payoutEvent = myDumbDAO.PaymentCalled();
+var payoutEvent = dumbDAO.PaymentCalled();
 payoutEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************");
@@ -11,7 +11,7 @@ payoutEvent.watch(function(error, result){
     }
 });
 
-var buyEvent = myDumbDAO.TokensBought();
+var buyEvent = dumbDAO.TokensBought();
 buyEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
@@ -23,7 +23,7 @@ buyEvent.watch(function(error, result){
     }
 });
 
-var buyEvent = myDumbDAO.TokensTransfered();
+var buyEvent = dumbDAO.TokensTransfered();
 buyEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
@@ -36,7 +36,7 @@ buyEvent.watch(function(error, result){
 });
 
 
-var attackEvent = myAttack.DefaultFunc();
+var attackEvent = attack.DefaultFunc();
 attackEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
