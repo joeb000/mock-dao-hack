@@ -39,7 +39,5 @@ printf "%s" " console.log('Deployed Contract ${CONTRACT_NAME} mined! address: ' 
 rm -rf $WORKING_DIR/tmp
 
 echo " "
-echo " "
 echo "loadScript('$DEPLOY_SCRIPT');"
-echo " "
 echo " "
