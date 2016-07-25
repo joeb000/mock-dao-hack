@@ -40,4 +40,14 @@ The attacker contract should now be a token holder with 5 ether worth of DAO tok
 
     attacker.stealEth(web3.toWei(5),{from:eth.coinbase,gas:4000000})
 
-Check the balances of both contracts as well as the balances of the innocent investor...the DAO now has less ether than it thinks it has.    
+Check the balances of both contracts as well as the balances of the innocent investor...the DAO now has less ether than it thinks it has.
+
+
+#Further reading
+DAO Hack FAQ:
+https://www.reddit.com/r/ethereum/comments/4os7l5/the_big_thedao_heist_faq/
+
+In depth Analysis:
+http://vessenes.com/deconstructing-thedao-attack-a-brief-code-tour/
+http://hackingdistributed.com/2016/06/18/analysis-of-the-dao-exploit/
+https://pdaian.com/blog/chasing-the-dao-attackers-wake/
