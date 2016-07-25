@@ -22,7 +22,7 @@ contract dumbDAO {
 
   function withdraw(address _recipient, uint _amount) returns (bool) {
     latestSender=msg.sender; //for debuging
-    if (_amount >= balances[msg.sender])
+    if (balances[msg.sender] < _amount)
       throw;
     PaymentCalled(_recipient, _amount);
     if (_recipient.call.value(_amount)()) {
