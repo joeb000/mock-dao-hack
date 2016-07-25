@@ -10,11 +10,6 @@ CONTRACT_NAME="${SOLCFILENAME%.*}"
 WORKING_DIR=`dirname $1`/../deploy
 DEPLOY_SCRIPT=$WORKING_DIR/deploy_$CONTRACT_NAME.js
 
-echo "filename:"
-echo $FILENAME
-echo $CONTRACT_EXT
-echo $CONTRACT_NAME
-
 mkdir -p $WORKING_DIR
 cd $WORKING_DIR
 WORKING_DIR=`pwd`
