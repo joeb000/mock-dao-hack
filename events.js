@@ -35,12 +35,25 @@ buyEvent.watch(function(error, result){
     }
 });
 
+var insuff = dumbDAO.InsufficientFunds();
+insuff.watch(function(error, result){
+    if (!error){
+      console.log("*******************************************************************************");
+      console.log("Inssufficent Funds Bal:" + result.args.bal +  " amount tried:" + result.args.amount + " wei");
+      console.log("*********************************************************************************");
+    }
+    else {
+      console.log("oops something went wrong...");
+    }
+});
+
 
 var attackEvent = attacker.DefaultFunc();
 attackEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
       console.log("Default func called from:" + result.args.caller + " amount: " + result.args.amount + " wei");
+      console.log("NUM:" + result.args.num + "BAL:" +  result.args.daoBalance);
       console.log("*********************************************************************************");
     }
     else {

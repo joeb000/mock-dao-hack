@@ -3,9 +3,10 @@ contract dumbDAO {
   event PaymentCalled(address payee, uint amount);
   event TokensBought(address buyer, uint amount);
   event TokensTransfered(address from, address to, uint amount);
+  event InsufficientFunds(uint bal, uint amount);
+
 
   mapping (address => uint) public balances;
-  address public latestSender;
 
   function buyTokens(){
     balances[msg.sender] += msg.value;
@@ -21,15 +22,14 @@ contract dumbDAO {
   }
 
   function withdraw(address _recipient, uint _amount) returns (bool) {
-    latestSender=msg.sender; //for debuging
-    if (balances[msg.sender] < _amount)
-      throw;
+    if (balances[msg.sender] < _amount){
+        InsufficientFunds(balances[msg.sender], _amount);
+        throw;
+    }
     PaymentCalled(_recipient, _amount);
     if (_recipient.call.value(_amount)()) {
         balances[msg.sender] -= _amount;
         return true;
-    } else {
-        return false;
     }
   }
 
