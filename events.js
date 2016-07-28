@@ -1,5 +1,5 @@
 
-var payoutEvent = dumbDAO.PaymentCalled();
+var payoutEvent = dumbdao.PaymentCalled();
 payoutEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************");
@@ -11,7 +11,7 @@ payoutEvent.watch(function(error, result){
     }
 });
 
-var buyEvent = dumbDAO.TokensBought();
+var buyEvent = dumbdao.TokensBought();
 buyEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
@@ -23,7 +23,7 @@ buyEvent.watch(function(error, result){
     }
 });
 
-var buyEvent = dumbDAO.TokensTransfered();
+var buyEvent = dumbdao.TokensTransfered();
 buyEvent.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
@@ -35,7 +35,7 @@ buyEvent.watch(function(error, result){
     }
 });
 
-var insuff = dumbDAO.InsufficientFunds();
+var insuff = dumbdao.InsufficientFunds();
 insuff.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
