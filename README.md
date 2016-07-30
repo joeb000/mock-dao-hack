@@ -43,6 +43,11 @@ The attacker contract should now be a token holder with 5 ether worth of DAO tok
 Check the balances of both contracts as well as the balances of the innocent investor...the DAO now has less ether than it thinks it has.
 
 
+#Reentrancy Attack - WIP
+To pull off the DAO hack, the attacker used a combination of the recursive call attack and another exploit called the reentrancy attack. This second attack consisted of the attacker transfering his DAO tokens to a different address as the last step of his recursive eploit. After the recurive attack ends and the DAO tries to update the attacker's DAO token balance which is now already 0 because of the transfer. The attacker is now free to transfer the tokens back into the attacker contract and run the exploit again.
+
+My reentrancy attack is still a work in progress, my DAO may be too oversimplified for it to work properly.
+
 #Further reading
 DAO Hack FAQ:
 https://www.reddit.com/r/ethereum/comments/4os7l5/the_big_thedao_heist_faq/
