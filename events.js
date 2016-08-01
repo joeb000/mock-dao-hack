@@ -48,8 +48,8 @@ insuff.watch(function(error, result){
 });
 
 
-var attackEvent = attacker.DefaultFunc();
-attackEvent.watch(function(error, result){
+var defaultAttackFuncCalled = attacker.DefaultFunc();
+defaultAttackFuncCalled.watch(function(error, result){
     if (!error){
       console.log("*******************************************************************************");
       console.log("Default func called from:" + result.args.caller + " amount: " + result.args.amount + " wei");
