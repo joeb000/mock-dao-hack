@@ -9,6 +9,7 @@ cd $SOLCFILEPATH/..
 mkdir -p deploy
 WORKING_DIR=`pwd`/deploy
 CONTRACT_EXT="${SOLCFILENAME#*.}"
+CONTRACT_EXACT_NAME=`echo ${SOLCFILENAME%.*}`
 CONTRACT_NAME=`echo ${SOLCFILENAME%.*} | tr '[:upper:]' '[:lower:]'`
 DEPLOY_SCRIPT=$WORKING_DIR/deploy_$CONTRACT_NAME.js
 
@@ -16,6 +17,29 @@ cd $SOLCFILEPATH
 
 solc --bin -o $WORKING_DIR/tmp $SOLCFILENAME
 solc --abi -o $WORKING_DIR/tmp $SOLCFILENAME
+
+#TODO - WORK IN PROGRESS
+################################################
+name=`awk "/function ${CONTRACT_EXACT_NAME}\(/ {print}" $SOLCFILENAME`
+echo "name:"
+echo $name
+conregex="\((.*)\)"
+if [[ $name =~ $conregex ]];
+  then conArgs=${BASH_REMATCH[1]};
+fi
+
+echo "con args"
+echo $conArgs
+
+#echo $conArgs | awk -F',' '{print $1}'
+argNumber=`echo $conArgs | awk -F',' '{ for(i = 1; i <= NF; i++) { print $i; max=$i } }' | wc -l`
+echo $argNumber
+for (( i = 1; i <= $argNumber; i++ )); do
+  echo "hello"
+  echo $conArgs | awk -F',' "{print \$$i}"
+done
+################################################
+
 
 echo " " > $DEPLOY_SCRIPT
 echo " " >> $DEPLOY_SCRIPT
@@ -29,6 +53,7 @@ printf "%s" `cat $WORKING_DIR/tmp/$CONTRACT_NAME.bin` >> $DEPLOY_SCRIPT
 printf "%s" "' })" >> $DEPLOY_SCRIPT
 echo " " >> $DEPLOY_SCRIPT
 echo " " >> $DEPLOY_SCRIPT
+#TODO - add support for constructor
 printf "%s" "var ${CONTRACT_NAME} = ${CONTRACT_NAME}Contract.new({" >> $DEPLOY_SCRIPT
 printf "%s" " from: web3.eth.accounts[0]," >> $DEPLOY_SCRIPT
 printf "%s" " data: '" >> $DEPLOY_SCRIPT
