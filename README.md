@@ -2,6 +2,9 @@
 I wanted to recreate a recurisive send exploit similar to the one used by an attacker to drain "The DAO". I wrote an extremely simplified DAO contract (`dumbDAO.sol`) which is vulnerable to this hack. Included is an attacker contract (`attacker.sol`) which, if executed correctly will drain the dumbDAO contract of its ether.
 
 #Running the exploit
+
+NOTE: THESE CONTRACTS WAS BUILT WITH SOLIDITY v0.3.6 - it will not compile with any newer versions!!
+
 Spin up a new geth node and console on the testnet or a privatenet (would not recommend trying this on the main Ethereum blockchain for obvious reasons). I've included a shell script called `compile_solidity.sh` which you can use to automatically compile the solidity contract code and create a deployment javascript file for you to load into your console.
 
     ./compile_solidity.sh dumbDAO.sol
