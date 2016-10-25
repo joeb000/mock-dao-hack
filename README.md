@@ -3,7 +3,7 @@ I wanted to recreate a recurisive send exploit similar to the one used by an att
 
 #Running the exploit
 
-NOTE: THESE CONTRACTS WAS BUILT WITH SOLIDITY v0.3.6 - it will not compile with any newer versions!!
+NOTE: THESE CONTRACTS WERE BUILT WITH SOLIDITY v0.3.6 - it will not compile with any newer versions!!
 
 Spin up a new geth node and console on the testnet or a privatenet (would not recommend trying this on the main Ethereum blockchain for obvious reasons). I've included a shell script called `compile_solidity.sh` which you can use to automatically compile the solidity contract code and create a deployment javascript file for you to load into your console.
 
