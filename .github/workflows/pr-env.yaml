@@ -13,8 +13,6 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions: write-all
-    # Maybe use join( array, optionalSeparator ) if this doesn't work.
-    # https://docs.github.com/en/actions/learn-github-actions/expressions#join
     environment: PR_${{ github.event.pull_request.number }}
     steps:
       - name: Check out the repo 🛎️
@@ -23,7 +21,7 @@ jobs:
       - name: Add default variables and secrets
         if: contains(fromJSON('["opened", "reopened"]'), github.event.action)
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           gh variable set REQUIRE_DB_BRANCH --env ${PR_ID} --body "false"
