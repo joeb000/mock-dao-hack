@@ -17,7 +17,7 @@ jobs:
     environment: PR_${{ github.event.pull_request.number }}
     steps:
       - name: Add default variables and secrets
-        if: contains(fromJSON('["opened", "reopened"]'), github.event.action)'
+        if: contains(fromJSON('["opened", "reopened"]'), github.event.action)
         env:
           PR_ID: ${{ github.event.pull_request.number }}
         run: |
