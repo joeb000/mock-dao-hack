@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  testGithubEnvironment:
+  createGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
     environment: PR_${{ github.event.pull_request.number }}
@@ -26,6 +26,12 @@ jobs:
           gh variable set require_db_branch --env ${PR_ID} --body "false"
           gh secret set DB_URL --env ${PR_ID} --body "$SHELL"
 
+  testGithubEnvironment:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    environment: PR_${{ github.event.pull_request.number }}
+    needs: [createGithubEnvironment]
+    steps:
       - name: Reference variable
         run: |
           echo "${{ vars.require_db_branch }}"
@@ -51,8 +57,6 @@ jobs:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
-          gh variable set REQUIRE_DB_BRANCH --env ${PR_ID} --body "false"
-          gh secret set DB_URL --env ${PR_ID} --body "$SHELL"
           gh api \
             --method DELETE \
             -H "Accept: application/vnd.github+json" \
