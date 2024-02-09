@@ -52,8 +52,15 @@ jobs:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
-          REQUIRE_DB_BRANCH=true
+          # Invert REQUIRE_DB_BRANCH
+          if [ "${{ vars.require_db_branch }}" = "true" ]; then
+            REQUIRE_DB_BRANCH=false
+          else
+            REQUIRE_DB_BRANCH=true
+          fi
+          # Push the new variable back to the deployment environment
           gh variable set require_db_branch --env ${PR_ID} --body "$REQUIRE_DB_BRANCH"
+          # Allow subsequent steps to access this updated value
           echo "require_db_branch=$REQUIRE_DB_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Reference updated variable
