@@ -29,8 +29,13 @@ jobs:
 
       - name: Reference variable
         run: |
-          echo $REQUIRE_DB_BRANCH
+          echo "${{ vars.REQUIRE_DB_BRANCH }}"
 
       - name: Reference secret
         run: |
-          echo ${{ secrets.DB_URL }}
+          echo "${{ secrets.DB_URL }}"
+          if [ "${{ secrets.DB_URL }}" = "$SHELL" ]; then
+            echo "Same"
+          else
+            echo "Different"
+          fi
