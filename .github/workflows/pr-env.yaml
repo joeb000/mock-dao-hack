@@ -67,7 +67,7 @@ jobs:
         run: |
           # This is a pitfall... You need to reference the previous step output rather than the environment.
           # echo "${{ vars.require_db_branch }}"
-          echo "${{ steps.update_variable.output.require_db_branch }}"
+          echo "${{ steps.update_variable.outputs.require_db_branch }}"
 
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
