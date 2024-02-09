@@ -17,13 +17,13 @@ jobs:
     environment: PR_${{ github.event.pull_request.number }}
     steps:
       - name: Check out the repo 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Add default variables and secrets
         if: contains(fromJSON('["opened", "reopened"]'), github.event.action)
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_ID: ${{ github.event.pull_request.number }}
+          PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           gh variable set REQUIRE_DB_BRANCH --env ${PR_ID} --body "false"
           gh secret set DB_URL --env ${PR_ID} --body "$SHELL"
