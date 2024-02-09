@@ -48,6 +48,7 @@ jobs:
           fi
 
       - name: Update variable
+        id: update_variable
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
