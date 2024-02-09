@@ -45,6 +45,17 @@ jobs:
             echo "Different"
           fi
 
+      - name: Update variable
+        env:
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          PR_ID: PR_${{ github.event.pull_request.number }}
+        run: |
+          gh variable set require_db_branch --env ${PR_ID} --body "true"
+
+      - name: Reference updated variable
+        run: |
+          echo "${{ vars.require_db_branch }}"
+
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
