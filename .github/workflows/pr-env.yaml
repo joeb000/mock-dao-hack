@@ -16,6 +16,9 @@ jobs:
     # https://docs.github.com/en/actions/learn-github-actions/expressions#join
     environment: PR_${{ github.event.pull_request.number }}
     steps:
+      - name: Check out the repo 🛎️
+        uses: actions/checkout@v2
+
       - name: Add default variables and secrets
         if: contains(fromJSON('["opened", "reopened"]'), github.event.action)
         env:
