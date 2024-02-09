@@ -1,0 +1,33 @@
+name: Update PR environment
+
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  testGithubEnvironment:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    # Maybe use join( array, optionalSeparator ) if this doesn't work.
+    # https://docs.github.com/en/actions/learn-github-actions/expressions#join
+    environment: PR_${{ github.event.pull_request.number }}
+    steps:
+      - name: Add default variables and secrets
+        if: contains(fromJSON('["opened", "reopened"]'), github.event.action)'
+        env:
+          PR_ID: ${{ github.event.pull_request.number }}
+        run: |
+          gh variable set REQUIRE_DB_BRANCH --env ${PR_ID} --body "false"
+          gh secret set DB_URL --env ${PR_ID} --body "$SHELL"
+
+      - name: Reference variable
+        run: |
+          echo $REQUIRE_DB_BRANCH
+
+      - name: Reference secret
+        run: |
+          echo ${{ secrets.DB_URL }}
