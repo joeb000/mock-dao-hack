@@ -19,6 +19,7 @@ jobs:
       - name: Add default variables and secrets
         if: contains(fromJSON('["opened", "reopened"]'), github.event.action)
         env:
+          GH_TOKEN: ${{ github.token }}
           PR_ID: ${{ github.event.pull_request.number }}
         run: |
           gh variable set REQUIRE_DB_BRANCH --env ${PR_ID} --body "false"
