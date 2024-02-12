@@ -164,17 +164,19 @@ jobs:
         with:
           name: ${{ env.PR_ID }}_env
           path: .env.artifact
+          overwrite: true
 
-  destroyGithubArtifact:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v4
+  # No need to destroy the artifact, as artifacts are bound to the workflow run anyhow.
+  # destroyGithubArtifact:
+  #   if: github.event_name == 'pull_request' && github.event.action == 'closed'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout 🛎️
+  #       uses: actions/checkout@v4
 
-      - name: Cleanup PR environment
-        env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-          PR_ID: PR_${{ github.event.pull_request.number }}
-        run: |
-          gh cache delete ${{ env.PR_ID }}_env
+  #     - name: Cleanup PR environment
+  #       env:
+  #         GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+  #         PR_ID: PR_${{ github.event.pull_request.number }}
+  #       run: |
+  #         gh cache delete ${{ env.PR_ID }}_env
