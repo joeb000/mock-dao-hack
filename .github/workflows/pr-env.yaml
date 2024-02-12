@@ -156,6 +156,9 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
       - name: Cleanup PR environment
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
