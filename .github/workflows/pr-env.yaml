@@ -125,13 +125,13 @@ jobs:
 
       - name: Reference Github artifact variable
         run: |
-          echo "${REQUIRE_ANOTHER_DB_RESET}"
+          echo "${{ env.REQUIRE_ANOTHER_DB_RESET }}"
 
       - name: Update Github artifact variable
         id: update_artifact_variable
         run: |
           # Invert REQUIRE_ANOTHER_DB_RESET
-          if [ "${REQUIRE_ANOTHER_DB_RESET}" = "true" ]; then
+          if [ "${{ env.REQUIRE_ANOTHER_DB_RESET }}" = "true" ]; then
             REQUIRE_ANOTHER_DB_RESET=false
           else
             REQUIRE_ANOTHER_DB_RESET=true
