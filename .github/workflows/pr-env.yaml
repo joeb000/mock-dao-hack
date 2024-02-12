@@ -132,19 +132,20 @@ jobs:
           run-id: ${{ steps.get_last_workflow_run_id.outputs.last_workflow_run }}
 
       - name: Read downloaded Github artifact
+        id: artifact-output
         uses: falti/dotenv-action@v1.0.4
         with:
           path: .env.artifact
 
       - name: Reference Github artifact variable
         run: |
-          echo "${{ steps.dotenv.outputs.REQUIRE_ANOTHER_DB_RESET }}"
+          echo "${{ steps.artifact-output.outputs.REQUIRE_ANOTHER_DB_RESET }}"
 
       - name: Update Github artifact variable
         id: update_artifact_variable
         run: |
           # Invert REQUIRE_ANOTHER_DB_RESET
-          if [ "${{ steps.dotenv.outputs.REQUIRE_ANOTHER_DB_RESET }}" = "true" ]; then
+          if [ "${{ steps.artifact-output.outputs.REQUIRE_ANOTHER_DB_RESET }}" = "true" ]; then
             REQUIRE_ANOTHER_DB_RESET=false
           else
             REQUIRE_ANOTHER_DB_RESET=true
@@ -197,20 +198,21 @@ jobs:
           path: .env.cache
           key: ${{ env.PR_ID }}_env
 
-      - name: Read downloaded Github artifact
+      - name: Read downloaded Github cache
+        id: cache-output
         uses: falti/dotenv-action@v1.0.4
         with:
           path: .env.cache
 
       - name: Reference Github cache variable
         run: |
-          echo "${{ steps.dotenv.outputs.APP_BRANCH_EXISTS }}"
+          echo "${{ steps.cache-output.outputs.APP_BRANCH_EXISTS }}"
 
       - name: Update Github cache variable
         id: update_cache_variable
         run: |
           # Invert APP_BRANCH_EXISTS
-          if [ "${{ steps.dotenv.outputs.APP_BRANCH_EXISTS }}" = "true" ]; then
+          if [ "${{ steps.cache-output.outputs.APP_BRANCH_EXISTS }}" = "true" ]; then
             APP_BRANCH_EXISTS=false
           else
             APP_BRANCH_EXISTS=true
