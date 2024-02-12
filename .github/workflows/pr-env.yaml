@@ -119,7 +119,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
-          gh run list -b ${{ github.head_ref }}
+          gh run list -b ${{ github.head_ref }} -s completed
 
       - name: Download Github artifact variables
         env:
