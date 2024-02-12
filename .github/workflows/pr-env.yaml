@@ -111,12 +111,20 @@ jobs:
     needs: [createGithubArtifact]
     runs-on: ubuntu-latest
     steps:
+      - name: Determine the run-id of the last workflow run
+        env:
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          PR_ID: PR_${{ github.event.pull_request.number }}
+        run: |
+          gh run list -b ${{ github.ref_name }}
+
       - name: Download Github artifact variables
         env:
           PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.PR_ID }}_env
+          run-id: 
 
       - name: Read downloaded Github artifact
         uses: falti/dotenv-action@v1.0.4
