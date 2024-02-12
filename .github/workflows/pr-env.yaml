@@ -17,7 +17,7 @@ jobs:
       - name: Check out the repo 🛎️
         uses: actions/checkout@v4
 
-      - name: Add default variables and secrets
+      - name: Add default Github environment variables and secrets
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
@@ -27,14 +27,14 @@ jobs:
 
   testGithubEnvironment:
     if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: [createGithubEnvironment]
     runs-on: ubuntu-latest
     environment: PR_${{ github.event.pull_request.number }}
-    needs: [createGithubEnvironment]
     steps:
       - name: Check out the repo 🛎️
         uses: actions/checkout@v4
 
-      - name: Reference variable
+      - name: Reference Github environment variable
         run: |
           echo "${{ vars.require_db_branch }}"
 
@@ -47,8 +47,8 @@ jobs:
             echo "Different"
           fi
 
-      - name: Update variable
-        id: update_variable
+      - name: Update Github environment variable
+        id: update_environment_variable
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
@@ -68,7 +68,65 @@ jobs:
         run: |
           # This is a pitfall... You need to reference the previous step output rather than the environment.
           # echo "${{ vars.require_db_branch }}"
-          echo "${{ steps.update_variable.outputs.require_db_branch }}"
+          echo "${{ steps.update_environment_variable.outputs.require_db_branch }}"
+
+  createGithubArtifact:
+    if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add default Github artifact variables and secrets
+        run: |
+          touch .env.artifact
+          echo REQUIRE_ANOTHER_DB_RESET="false" >> .env.artifact
+          echo SEMI_SECRET_VALUE="semi-secret" >> .env.artifact
+
+      - name: Upload Github artifact variables
+        uses: actions/upload-artifact@v4
+        with:
+          name: env
+          path: .env.artifact
+
+  testGithubArtifact:
+    if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: [createGithubArtifact]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Github artifact variables
+        uses: actions/download-artifact@v4
+        with:
+          name: env
+
+      - name: Read downloaded Github artifact
+        uses: falti/dotenv-action@v1.0.4
+        with:
+          path: .env.artifact
+
+      - name: Reference Github artifact variable
+        run: |
+          echo "${{ REQUIRE_ANOTHER_DB_RESET }}"
+
+      - name: Update Github artifact variable
+        id: update_artifact_variable
+        run: |
+          # Invert REQUIRE_ANOTHER_DB_RESET
+          if [ "${{ REQUIRE_ANOTHER_DB_RESET }}" = "true" ]; then
+            REQUIRE_ANOTHER_DB_RESET=false
+          else
+            REQUIRE_ANOTHER_DB_RESET=true
+          fi
+          # Push the new variable back to the .env.artifact
+          # By deleting the existing entry (if there is one)
+          sed -e /REQUIRE_ANOTHER_DB_RESET/d .env.artifact > tmpfile && mv tmpfile .env.artifact
+          # ..and re-adding the updated value
+          echo "REQUIRE_ANOTHER_DB_RESET=$REQUIRE_ANOTHER_DB_RESET" >> .env.artifact
+          # Allow subsequent steps to access this updated value
+          echo "require_another_db_reset=$REQUIRE_ANOTHER_DB_RESET" >> $GITHUB_OUTPUT
+
+      - name: Upload Github artifact variables
+        uses: actions/upload-artifact@v4
+        with:
+          name: env
+          path: .env.artifact
 
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
