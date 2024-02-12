@@ -166,17 +166,81 @@ jobs:
           path: .env.artifact
           overwrite: true
 
-  # No need to destroy the artifact, as artifacts are bound to the workflow run anyhow.
-  # destroyGithubArtifact:
-  #   if: github.event_name == 'pull_request' && github.event.action == 'closed'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout 🛎️
-  #       uses: actions/checkout@v4
+  createGithubCache:
+    if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add default Github cache variables and secrets
+        run: |
+          touch .env.cache
+          echo APP_BRANCH_EXISTS="false" >> .env.cache
+          echo OTHER_SEMI_SECRET_VALUE="other-semi-secret" >> .env.cache
 
-  #     - name: Cleanup PR environment
-  #       env:
-  #         GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-  #         PR_ID: PR_${{ github.event.pull_request.number }}
-  #       run: |
-  #         gh cache delete ${{ env.PR_ID }}_env
+      - name: Save Github cache variables
+        env:
+          PR_ID: PR_${{ github.event.pull_request.number }}
+        uses: actions/cache/save@v4
+        with:
+          path: .env.cache
+          key: ${{ env.PR_ID }}_env
+
+  testGithubCache:
+    if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: [createGithubCache]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore Github cache variables
+        env:
+          PR_ID: PR_${{ github.event.pull_request.number }}
+        uses: actions/cache/restore@v4
+        with:
+          path: .env.cache
+          key: ${{ env.PR_ID }}_env
+
+      - name: Read downloaded Github artifact
+        uses: falti/dotenv-action@v1.0.4
+        with:
+          path: .env.cache
+
+      - name: Reference Github cache variable
+        run: |
+          echo "${{ steps.dotenv.outputs.APP_BRANCH_EXISTS }}"
+
+      - name: Update Github cache variable
+        id: update_cache_variable
+        run: |
+          # Invert APP_BRANCH_EXISTS
+          if [ "${{ steps.dotenv.outputs.APP_BRANCH_EXISTS }}" = "true" ]; then
+            APP_BRANCH_EXISTS=false
+          else
+            APP_BRANCH_EXISTS=true
+          fi
+          # Push the new variable back to the .env.cache
+          # By deleting the existing entry (if there is one)
+          sed -e /APP_BRANCH_EXISTS/d .env.cache > tmpfile && mv tmpfile .env.cache
+          # ..and re-adding the updated value
+          echo "APP_BRANCH_EXISTS=$APP_BRANCH_EXISTS" >> .env.cache
+          # Allow subsequent steps to access this updated value
+          echo "APP_BRANCH_EXISTS=$APP_BRANCH_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Save the updated Github cache variables
+        env:
+          PR_ID: PR_${{ github.event.pull_request.number }}
+        uses: actions/cache/save@v4
+        with:
+          path: .env.cache
+          key: ${{ env.PR_ID }}_env
+
+  destroyGithubCache:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Cleanup PR cache
+        env:
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          PR_ID: PR_${{ github.event.pull_request.number }}
+        run: |
+          gh cache delete ${{ env.PR_ID }}_env
