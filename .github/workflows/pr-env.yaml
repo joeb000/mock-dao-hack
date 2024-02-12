@@ -120,7 +120,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
-          LAST_WORKFLOW_RUN=$(gh run list -b ${{ github.head_ref }} -s completed -L 1 -q ".[].databaseId")
+          LAST_WORKFLOW_RUN=$(gh run list -b ${{ github.head_ref }} -s completed -L 1 --json databaseId -q ".[].databaseId")
           echo "last_workflow_run=$LAST_WORKFLOW_RUN" >> $GITHUB_OUTPUT
 
       - name: Download Github artifact variables
