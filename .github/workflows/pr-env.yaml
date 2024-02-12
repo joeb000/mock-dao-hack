@@ -103,7 +103,7 @@ jobs:
           PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${PR_ID}_env
+          name: ${{ env.PR_ID }}_env
           path: .env.artifact
 
   testGithubArtifact:
@@ -116,7 +116,7 @@ jobs:
           PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/download-artifact@v4
         with:
-          name: ${PR_ID}_env
+          name: ${{ env.PR_ID }}_env
 
       - name: Read downloaded Github artifact
         uses: falti/dotenv-action@v1.0.4
@@ -149,7 +149,7 @@ jobs:
           PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${PR_ID}_env
+          name: ${{ env.PR_ID }}_env
           path: .env.artifact
 
   destroyGithubArtifact:
@@ -164,4 +164,4 @@ jobs:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
           PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
-          gh cache delete ${PR_ID}_env
+          gh cache delete ${{ env.PR_ID }}_env
