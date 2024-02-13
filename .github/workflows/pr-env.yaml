@@ -84,7 +84,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "$GITHUB_ENV" > .github_env
+          echo "${{ env }}" > .github_env
           gh variable set --env ${{ env.PR_ID }} --env-file .github_env
 
   destroyGithubEnvironment:
