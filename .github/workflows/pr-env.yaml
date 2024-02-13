@@ -82,9 +82,10 @@ jobs:
 
       - name: Use $GITHUB_ENV to update the Github environment
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
         run: |
-          for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.[] | select(. == "***"))|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
+          # Create a .env from the Github env, but filter out the secret GH_TOKEN
+          for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
             echo $s >> .github_env
           done
           gh variable set --env ${{ env.PR_ID }} --env-file .github_env
