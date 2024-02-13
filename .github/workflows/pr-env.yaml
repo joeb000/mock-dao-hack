@@ -24,8 +24,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
         run: |
-          gh variable set require_db_branch --env ${PR_ID} --body "false"
-          gh secret set DB_URL --env ${PR_ID} --body "$SHELL"
+          gh variable set require_db_branch --env ${{ env.PR_ID }} --body "false"
+          gh secret set DB_URL --env ${{ env.PR_ID }} --body "$SHELL"
 
   testGithubEnvironment:
     if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
@@ -61,7 +61,7 @@ jobs:
             REQUIRE_DB_BRANCH=true
           fi
           # Push the new variable back to the deployment environment
-          gh variable set require_db_branch --env ${PR_ID} --body "$REQUIRE_DB_BRANCH"
+          gh variable set require_db_branch --env ${{ env.PR_ID }} --body "$REQUIRE_DB_BRANCH"
           # Allow subsequent steps to access this updated value
           echo "require_db_branch=$REQUIRE_DB_BRANCH" >> $GITHUB_OUTPUT
 
@@ -86,7 +86,7 @@ jobs:
             --method DELETE \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/environments/${PR_ID}
+            /repos/${{ github.repository }}/environments/${{ env.PR_ID }}
 
   createGithubArtifact:
     if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
@@ -214,6 +214,7 @@ jobs:
           # Allow subsequent steps to access this updated value
           echo "APP_BRANCH_EXISTS=$APP_BRANCH_EXISTS" >> $GITHUB_OUTPUT
 
+      # This is cache's main pitfall: Only one version of a cache may exist at a time, so trying to save over an existing cache will fail.
       - name: Save the updated Github cache variables
         uses: actions/cache/save@v4
         with:
