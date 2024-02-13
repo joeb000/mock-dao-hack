@@ -105,7 +105,7 @@ jobs:
             /repos/${{ github.repository }}/environments/${{ env.PR_ID }}
 
   createGithubArtifact:
-    if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
+    if: false && github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
     runs-on: ubuntu-latest
     steps:
       - name: Add default Github artifact variables and secrets
@@ -121,7 +121,7 @@ jobs:
           path: .env.artifact
 
   testGithubArtifact:
-    if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
+    if: false && always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [createGithubArtifact]
     runs-on: ubuntu-latest
     steps:
@@ -177,7 +177,7 @@ jobs:
           overwrite: true
 
   createGithubCache:
-    if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
+    if: false && github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
     runs-on: ubuntu-latest
     steps:
       - name: Add default Github cache variables and secrets
@@ -193,7 +193,7 @@ jobs:
           key: ${{ env.PR_ID }}_env
 
   testGithubCache:
-    if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
+    if: false && always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [createGithubCache]
     runs-on: ubuntu-latest
     steps:
@@ -238,7 +238,7 @@ jobs:
           key: ${{ env.PR_ID }}_env
 
   destroyGithubCache:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: false && github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
