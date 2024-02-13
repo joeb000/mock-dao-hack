@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, closed]
 
+env:
+  PR_ID: PR_${{ github.event.pull_request.number }}
+
 concurrency:
   group: pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
@@ -20,7 +23,6 @@ jobs:
       - name: Add default Github environment variables and secrets
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-          PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           gh variable set require_db_branch --env ${PR_ID} --body "false"
           gh secret set DB_URL --env ${PR_ID} --body "$SHELL"
@@ -51,7 +53,6 @@ jobs:
         id: update_environment_variable
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-          PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           # Invert REQUIRE_DB_BRANCH
           if [ "${{ vars.require_db_branch }}" = "true" ]; then
@@ -80,7 +81,6 @@ jobs:
       - name: Cleanup PR environment
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-          PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           gh api \
             --method DELETE \
@@ -99,8 +99,6 @@ jobs:
           echo SEMI_SECRET_VALUE="semi-secret" >> .env.artifact
 
       - name: Upload Github artifact variables
-        env:
-          PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PR_ID }}_env
@@ -118,14 +116,11 @@ jobs:
         id: get_last_workflow_run_id
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-          PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           LAST_WORKFLOW_RUN=$(gh run list -b ${{ github.head_ref }} -s completed -L 1 --json databaseId -q ".[].databaseId")
           echo "last_workflow_run=$LAST_WORKFLOW_RUN" >> $GITHUB_OUTPUT
 
       - name: Download Github artifact variables
-        env:
-          PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.PR_ID }}_env
@@ -159,8 +154,6 @@ jobs:
           echo "require_another_db_reset=$REQUIRE_ANOTHER_DB_RESET" >> $GITHUB_OUTPUT
 
       - name: Upload Github artifact variables
-        env:
-          PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PR_ID }}_env
@@ -178,8 +171,6 @@ jobs:
           echo OTHER_SEMI_SECRET_VALUE="other-semi-secret" >> .env.cache
 
       - name: Save Github cache variables
-        env:
-          PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/cache/save@v4
         with:
           path: .env.cache
@@ -191,8 +182,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Restore Github cache variables
-        env:
-          PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/cache/restore@v4
         with:
           path: .env.cache
@@ -226,8 +215,6 @@ jobs:
           echo "APP_BRANCH_EXISTS=$APP_BRANCH_EXISTS" >> $GITHUB_OUTPUT
 
       - name: Save the updated Github cache variables
-        env:
-          PR_ID: PR_${{ github.event.pull_request.number }}
         uses: actions/cache/save@v4
         with:
           path: .env.cache
@@ -243,6 +230,5 @@ jobs:
       - name: Cleanup PR cache
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
-          PR_ID: PR_${{ github.event.pull_request.number }}
         run: |
           gh cache delete ${{ env.PR_ID }}_env
