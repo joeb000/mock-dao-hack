@@ -71,6 +71,14 @@ jobs:
           # echo "${{ vars.require_db_branch }}"
           echo "${{ steps.update_environment_variable.outputs.require_db_branch }}"
 
+      - name: Another method to update Github environment variable
+        run: |
+          echo "does_this_work='yes'" >> $GITHUB_ENV
+
+      - name: Reference variable updated by another method
+        run: |
+          echo "${{ env.does_this_work }}"
+
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
