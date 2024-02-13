@@ -81,6 +81,8 @@ jobs:
           echo "${{ env.does_this_work }}"
 
       - name: Use $GITHUB_ENV to update the Github environment
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "$GITHUB_ENV" > .github_env
           gh variable set --env ${{ env.PR_ID }} --env-file .github_env
