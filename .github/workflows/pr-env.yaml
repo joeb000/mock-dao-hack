@@ -132,6 +132,10 @@ jobs:
             echo "${pet^^}_IS_CUTE=true" >> $GITHUB_ENV
           done
 
+          wait
+
+          echo "Done waiting"
+
       - name: Reference Github environment loop variable
         run: |
           PETS=("cat" "dog" "hamster" "fish")
