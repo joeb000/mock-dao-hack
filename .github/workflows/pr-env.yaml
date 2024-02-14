@@ -129,6 +129,14 @@ jobs:
             echo "${pet^^}_IS_CUTE=true" >> $GITHUB_ENV
           done
 
+      - name: Reference Github environment loop variable
+        run: |
+          PETS=("cat" "dog" "hamster" "fish")
+
+          for pet in "${PETS[@]}"; do
+            echo "${pet^^}_IS_CUTE"
+          done
+
       - name: Use $GITHUB_ENV to update the Github environment
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
