@@ -141,7 +141,7 @@ jobs:
 
           for pet in "${PETS[@]}"; do
             export ${pet^^}_IS_CUTE=true
-            echo "${pet^^}_IS_CUTE" >> $GITHUB_ENV
+            echo "${pet^^}_IS_CUTE=${!${pet^^}_IS_CUTE}" >> $GITHUB_ENV
           done
 
   destroyGithubEnvironment:
