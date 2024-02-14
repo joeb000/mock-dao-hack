@@ -107,18 +107,18 @@ jobs:
 
       - name: Invert another Github environment variable
         run: |
-          # Invert INVERTABLE_TEST
-          if [ "${{ vars.invertable_test }}" = "true" ]; then
-            INVERTABLE_TEST=false
+          # Invert INVERTIBLE_TEST
+          if [ "${{ vars.invertible_test }}" = "true" ]; then
+            INVERTIBLE_TEST=false
           else
-            INVERTABLE_TEST=true
+            INVERTIBLE_TEST=true
           fi
           # Allow subsequent steps to access this updated value
-          echo "invertable_test=$INVERTABLE_TEST" >> $GITHUB_ENV
+          echo "invertible_test=$INVERTIBLE_TEST" >> $GITHUB_ENV
 
       - name: Reference Github environment variable
         run: |
-          echo "${{ env.invertable_test }}"
+          echo "${{ env.invertible_test }}"
 
       - name: Use $GITHUB_ENV to update the Github environment
         env:
@@ -129,6 +129,11 @@ jobs:
             echo $s >> .github_env
           done
           gh variable set --env ${{ env.PR_ID }} --env-file .github_env
+
+      - name: Github environment variable immediately available?
+        run: |
+          echo "immediate=yes" >> $GITHUB_ENV
+          echo "${{ env.immediate }}"
 
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
