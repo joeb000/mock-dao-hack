@@ -96,6 +96,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: PR_${{ github.event.pull_request.number }}
     steps:
+      - name: Check out the repo 🛎️
+        uses: actions/checkout@v4
+
       - name: Reference Github environment variable
         run: |
           echo "${{ vars.does_this_work }}"
