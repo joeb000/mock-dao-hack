@@ -27,6 +27,7 @@ jobs:
         run: |
           gh variable set require_db_branch --env ${{ env.PR_ID }} --body "false"
           gh secret set DB_URL --env ${{ env.PR_ID }} --body "$SHELL"
+          gh secret set PET_KEY --env ${{ env.PR_ID }} --body "some key"
 
   testGithubEnvironment:
     name: Test Github Environment Job 1
@@ -127,9 +128,17 @@ jobs:
         run: |
           PETS=("cat" "dog" "hamster" "fish")
 
+          COMMAND_ENV_VAR_PREFIX="KEY=${{ secrets.PET_KEY }}"
           for pet in "${PETS[@]}"; do
             export ${pet^^}_IS_CUTE=true
             echo "${pet^^}_IS_CUTE=true" >> $GITHUB_ENV
+
+            name=$pet
+
+            IS_CUTE_VARIABLE_NAME="${pet^^}_IS_CUTE"
+            echo "${!IS_CUTE_VARIABLE_NAME}"
+            COMMAND_ENV_VAR_PREFIX="${COMMAND_ENV_VAR_PREFIX} ${name^^}_IS_CUTE=${!IS_CUTE_VARIABLE_NAME}"
+            echo "$COMMAND_ENV_VAR_PREFIX"
           done
 
           wait
