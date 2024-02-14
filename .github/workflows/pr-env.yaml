@@ -134,6 +134,15 @@ jobs:
         run: |
           echo "immediate=yes" >> $GITHUB_ENV
           echo "${{ env.immediate }}"
+      
+      - name: For loops
+        run: |
+          PETS=("cat" "dog" "hamster" "fish")
+
+          for pet in "${PETS[@]}"; do
+            ${pet^^}_IS_CUTE=true
+            echo "${pet^^}_IS_CUTE" >> $GITHUB_ENV
+          done
 
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
