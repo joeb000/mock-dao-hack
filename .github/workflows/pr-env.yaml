@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   createGithubEnvironment:
+    name: Create Github Environment
     if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
     runs-on: ubuntu-latest
     environment: PR_${{ github.event.pull_request.number }}
@@ -28,6 +29,7 @@ jobs:
           gh secret set DB_URL --env ${{ env.PR_ID }} --body "$SHELL"
 
   testGithubEnvironment:
+    name: Test Github Environment Job 1
     if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [createGithubEnvironment]
     runs-on: ubuntu-latest
@@ -92,6 +94,7 @@ jobs:
           gh variable set --env ${{ env.PR_ID }} --env-file .github_env
 
   testSecondJobGithubEnvironment:
+    name: Test Github Environment Job 2
     if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [testGithubEnvironment]
     runs-on: ubuntu-latest
@@ -154,6 +157,7 @@ jobs:
           echo "${{ env.immediate }}"
 
   destroyGithubEnvironment:
+    name: Cleanup Github Environment
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
@@ -171,6 +175,7 @@ jobs:
             /repos/${{ github.repository }}/environments/${{ env.PR_ID }}
 
   createGithubArtifact:
+    name: Create Github Artifact
     if: false && github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
     runs-on: ubuntu-latest
     steps:
@@ -187,6 +192,7 @@ jobs:
           path: .env.artifact
 
   testGithubArtifact:
+    name: Test Github Artifact
     if: false && always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [createGithubArtifact]
     runs-on: ubuntu-latest
@@ -243,6 +249,7 @@ jobs:
           overwrite: true
 
   createGithubCache:
+    name: Create Github Cache
     if: false && github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
     runs-on: ubuntu-latest
     steps:
@@ -259,6 +266,7 @@ jobs:
           key: ${{ env.PR_ID }}_env
 
   testGithubCache:
+    name: Test Github Cache
     if: false && always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [createGithubCache]
     runs-on: ubuntu-latest
@@ -304,6 +312,7 @@ jobs:
           key: ${{ env.PR_ID }}_env
 
   destroyGithubCache:
+    name: Cleanup Github Cache
     if: false && github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
