@@ -119,6 +119,15 @@ jobs:
       - name: Reference Github environment variable
         run: |
           echo "${{ env.invertible_test }}"
+      
+      - name: For loops
+        run: |
+          PETS=("cat" "dog" "hamster" "fish")
+
+          for pet in "${PETS[@]}"; do
+            export ${pet^^}_IS_CUTE=true
+            echo "${pet^^}_IS_CUTE=true" >> $GITHUB_ENV
+          done
 
       - name: Use $GITHUB_ENV to update the Github environment
         env:
@@ -134,15 +143,6 @@ jobs:
         run: |
           echo "immediate=yes" >> $GITHUB_ENV
           echo "${{ env.immediate }}"
-      
-      - name: For loops
-        run: |
-          PETS=("cat" "dog" "hamster" "fish")
-
-          for pet in "${PETS[@]}"; do
-            export ${pet^^}_IS_CUTE=true
-            echo "${pet^^}_IS_CUTE=true" >> $GITHUB_ENV
-          done
 
   destroyGithubEnvironment:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
