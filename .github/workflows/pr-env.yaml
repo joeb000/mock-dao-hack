@@ -140,7 +140,7 @@ jobs:
           PETS=("cat" "dog" "hamster" "fish")
 
           for pet in "${PETS[@]}"; do
-            ${pet^^}_IS_CUTE=true
+            export ${pet^^}_IS_CUTE=true
             echo "${pet^^}_IS_CUTE" >> $GITHUB_ENV
           done
 
