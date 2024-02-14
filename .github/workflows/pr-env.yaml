@@ -134,7 +134,8 @@ jobs:
           PETS=("cat" "dog" "hamster" "fish")
 
           for pet in "${PETS[@]}"; do
-            echo "${pet^^}_IS_CUTE"
+            VAR_NAME="${pet^^}_IS_CUTE"
+            echo "${!VAR_NAME}"
           done
 
       - name: Use $GITHUB_ENV to update the Github environment
