@@ -84,7 +84,42 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
         run: |
-          # Create a .env from the Github env, but filter out the secret GH_TOKEN
+          # Create a .env file from the Github env, but filter out the secret GH_TOKEN.
+          for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
+            echo $s >> .github_env
+          done
+          gh variable set --env ${{ env.PR_ID }} --env-file .github_env
+
+  testSecondJobGithubEnvironment:
+    if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: [testGithubEnvironment]
+    runs-on: ubuntu-latest
+    environment: PR_${{ github.event.pull_request.number }}
+    steps:
+      - name: Reference Github environment variable
+        run: |
+          echo "${{ vars.does_this_work }}"
+
+      - name: Invert another Github environment variable
+        run: |
+          # Invert INVERTABLE_TEST
+          if [ "${{ vars.invertable_test }}" = "true" ]; then
+            INVERTABLE_TEST=false
+          else
+            INVERTABLE_TEST=true
+          fi
+          # Allow subsequent steps to access this updated value
+          echo "invertable_test=$INVERTABLE_TEST" >> $GITHUB_ENV
+
+      - name: Reference Github environment variable
+        run: |
+          echo "${{ env.invertable_test }}"
+
+      - name: Use $GITHUB_ENV to update the Github environment
+        env:
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+        run: |
+          # Create a .env file from the Github env, but filter out the secret GH_TOKEN.
           for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
             echo $s >> .github_env
           done
