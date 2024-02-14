@@ -78,7 +78,8 @@ jobs:
 
       - name: Reference variable updated by another method
         run: |
-          echo "${{ env.does_this_work }}"
+          echo "env: ${{ env.does_this_work }}"
+          echo "vars: ${{ vars.does_this_work }}"
 
       - name: Use $GITHUB_ENV to update the Github environment
         env:
@@ -101,7 +102,8 @@ jobs:
 
       - name: Reference Github environment variable
         run: |
-          echo "${{ vars.does_this_work }}"
+          echo "env: ${{ env.does_this_work }}"
+          echo "vars: ${{ vars.does_this_work }}"
 
       - name: Invert another Github environment variable
         run: |
