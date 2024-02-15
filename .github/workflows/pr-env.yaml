@@ -169,6 +169,12 @@ jobs:
           echo "immediate=yes" >> $GITHUB_ENV
           echo "${{ env.immediate }}"
 
+      - name: Reference a secret that does not exist?
+        env:
+          SECRET: ${{ secrets.does_not_exist }}
+        run: |
+          echo "${{ env.SECRET }}"
+
   destroyGithubEnvironment:
     name: Cleanup Github Environment
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
