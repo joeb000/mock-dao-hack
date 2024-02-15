@@ -53,6 +53,7 @@ jobs:
           fi
 
       - name: Update Github secret
+        id: update_secret
         env:
           PET_KEY: ${{ secrets.PET_KEY }}
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
@@ -63,6 +64,7 @@ jobs:
           echo "New PET_KEY value: $PET_KEY"
           # Push the new variable back to the deployment environment
           gh secret set PET_KEY --env ${{ env.PR_ID }} --body "$PET_KEY"
+          echo "pet_key=$PET_KEY" >> $GITHUB_OUTPUT
 
       - name: Reference secret
         env:
@@ -71,6 +73,7 @@ jobs:
           echo "Workflow expansion: ${{ secrets.PET_KEY }}"
           echo "Environment expansion: $PET_KEY"
           echo "Local Decrement expansion: $((--PET_KEY))"
+          echo "Output expansion: ${{ steps.update_secret.outputs.pet_key }}"
 
       - name: Update Github environment variable
         id: update_environment_variable
