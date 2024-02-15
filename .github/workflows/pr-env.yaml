@@ -149,11 +149,11 @@ jobs:
             INVERTIBLE_TEST=true
           fi
           # Allow subsequent steps to access this updated value
-          echo "invertible_test=$INVERTIBLE_TEST" >> $GITHUB_ENV
+          echo "INVERTIBLE_TEST=$INVERTIBLE_TEST" >> $GITHUB_ENV
 
       - name: Reference Github environment variable
         run: |
-          echo "${{ env.invertible_test }}"
+          echo "$INVERTIBLE_TEST"
       
       - name: For loops
         run: |
@@ -166,9 +166,10 @@ jobs:
 
             name=$pet
 
-            IS_CUTE_VARIABLE_NAME="${pet^^}_IS_CUTE"
-            echo "${!IS_CUTE_VARIABLE_NAME}"
-            COMMAND_ENV_VAR_PREFIX="${COMMAND_ENV_VAR_PREFIX} ${name^^}_IS_CUTE=${!IS_CUTE_VARIABLE_NAME}"
+            IS_CUTE_VARIABLE_KEY="${pet^^}_IS_CUTE"
+            IS_CUTE_VARIABLE_VALUE="${!IS_CUTE_VARIABLE_KEY}"
+            echo "${IS_CUTE_VARIABLE_VALUE}"
+            COMMAND_ENV_VAR_PREFIX="${COMMAND_ENV_VAR_PREFIX} ${name^^}_IS_CUTE=${IS_CUTE_VARIABLE_VALUE}"
             echo "$COMMAND_ENV_VAR_PREFIX"
           done
 
