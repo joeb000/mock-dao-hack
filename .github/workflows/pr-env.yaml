@@ -53,7 +53,6 @@ jobs:
           fi
 
       - name: Update Github secret
-        id: update_environment_variable
         env:
           PET_KEY: ${{ secrets.PET_KEY }}
           GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
@@ -66,13 +65,12 @@ jobs:
           gh secret set PET_KEY --env ${{ env.PR_ID }} --body "$PET_KEY"
 
       - name: Reference secret
+        env:
+          PET_KEY: ${{ secrets.PET_KEY }}
         run: |
-          echo "${{ secrets.DB_URL }}"
-          if [ "${{ secrets.DB_URL }}" = "$SHELL" ]; then
-            echo "Same"
-          else
-            echo "Different"
-          fi
+          echo "Workflow expansion: ${{ secrets.PET_KEY }}"
+          echo "Environment expansion: $PET_KEY"
+          echo "Local Decrement expansion: $((--PET_KEY))"
 
       - name: Update Github environment variable
         id: update_environment_variable
