@@ -27,7 +27,7 @@ jobs:
         run: |
           gh variable set require_db_branch --env ${{ env.PR_ID }} --body "false"
           gh secret set DB_URL --env ${{ env.PR_ID }} --body "$SHELL"
-          gh secret set PET_KEY --env ${{ env.PR_ID }} --body "some key"
+          gh secret set PET_KEY --env ${{ env.PR_ID }} --body "1"
 
   testGithubEnvironment:
     name: Test Github Environment Job 1
@@ -42,6 +42,28 @@ jobs:
       - name: Reference Github environment variable
         run: |
           echo "${{ vars.require_db_branch }}"
+
+      - name: Reference secret
+        run: |
+          echo "${{ secrets.DB_URL }}"
+          if [ "${{ secrets.DB_URL }}" = "$SHELL" ]; then
+            echo "Same"
+          else
+            echo "Different"
+          fi
+
+      - name: Update Github secret
+        id: update_environment_variable
+        env:
+          PET_KEY: ${{ secrets.PET_KEY }}
+          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+        run: |
+          # Increment PET_KEY using arithmetic expansion ((...))
+          echo "Old PET_KEY value: $PET_KEY"
+          ((PET_KEY++))
+          echo "New PET_KEY value: $PET_KEY"
+          # Push the new variable back to the deployment environment
+          gh secret set PET_KEY --env ${{ env.PR_ID }} --body "$PET_KEY"
 
       - name: Reference secret
         run: |
