@@ -35,6 +35,8 @@ jobs:
     needs: [createGithubEnvironment]
     runs-on: ubuntu-latest
     environment: PR_${{ github.event.pull_request.number }}
+    outputs:
+      pet_key: ${{ steps.update_secret.outputs.pet_key }}
     steps:
       - name: Check out the repo 🛎️
         uses: actions/checkout@v4
@@ -73,7 +75,7 @@ jobs:
           echo "Workflow expansion: ${{ secrets.PET_KEY }}"
           echo "Environment expansion: $PET_KEY"
           echo "Local Decrement expansion: $((--PET_KEY))"
-          echo "Output expansion: ${{ steps.update_secret.outputs.pet_key }}"
+          echo "Step Output expansion: ${{ steps.update_secret.outputs.pet_key }}"
 
       - name: Update Github environment variable
         id: update_environment_variable
@@ -126,6 +128,15 @@ jobs:
     steps:
       - name: Check out the repo 🛎️
         uses: actions/checkout@v4
+
+      - name: Reference secret in another job
+        env:
+          PET_KEY: ${{ secrets.PET_KEY }}
+        run: |
+          echo "Workflow expansion: ${{ secrets.PET_KEY }}"
+          echo "Environment expansion: $PET_KEY"
+          echo "Local Decrement expansion: $((--PET_KEY))"
+          echo "Job Output expansion: ${{ jobs.testGithubEnvironment.outputs.pet_key }}"
 
       - name: Reference Github environment variable
         run: |
