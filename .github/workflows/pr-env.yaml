@@ -23,7 +23,7 @@ jobs:
 
       - name: Add default Github environment variables and secrets
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           gh variable set require_db_branch --env ${{ env.PR_ID }} --body "false"
           gh secret set DB_URL --env ${{ env.PR_ID }} --body "$SHELL"
@@ -56,7 +56,7 @@ jobs:
         id: update_secret
         env:
           PET_KEY: ${{ secrets.PET_KEY }}
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           # Increment PET_KEY using arithmetic expansion ((...))
           echo "Old PET_KEY value: $PET_KEY"
@@ -78,7 +78,7 @@ jobs:
       - name: Update Github environment variable
         id: update_environment_variable
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           # Invert REQUIRE_DB_BRANCH
           if [ "${{ vars.require_db_branch }}" = "true" ]; then
@@ -109,7 +109,7 @@ jobs:
 
       - name: Use $GITHUB_ENV to update the Github environment
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           # Create a .env file from the Github env, but filter out the secret GH_TOKEN.
           for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
@@ -189,7 +189,7 @@ jobs:
 
       - name: Use $GITHUB_ENV to update the Github environment
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           # Create a .env file from the Github env, but filter out the secret GH_TOKEN.
           for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
@@ -218,7 +218,7 @@ jobs:
 
       - name: Cleanup PR environment
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           gh api \
             --method DELETE \
@@ -255,7 +255,7 @@ jobs:
       - name: Determine the run-id of the last workflow run
         id: get_last_workflow_run_id
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           LAST_WORKFLOW_RUN=$(gh run list -b ${{ github.head_ref }} -s completed -L 1 --json databaseId -q ".[].databaseId")
           echo "last_workflow_run=$LAST_WORKFLOW_RUN" >> $GITHUB_OUTPUT
@@ -373,6 +373,6 @@ jobs:
 
       - name: Cleanup PR cache
         env:
-          GH_TOKEN: ${{ secrets.ENVIRONMENT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           gh cache delete ${{ env.PR_ID }}_env
