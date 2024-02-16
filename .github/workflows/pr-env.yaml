@@ -34,7 +34,7 @@ jobs:
     if: always() && github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: [createGithubEnvironment]
     runs-on: ubuntu-latest
-    environment: env.PR_ID
+    environment: PR_${{ github.event.pull_request.number }}
     steps:
       - name: Check out the repo 🛎️
         uses: actions/checkout@v4
