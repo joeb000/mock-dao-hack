@@ -115,8 +115,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
-          # Create a .env file from the Github env, but filter out the secret GH_TOKEN.
-          for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
+          # Create a .env file from the Github env, but filter out the secret GH_TOKEN and blank values.
+          for s in $(echo '${{ toJSON(env) }}' | jq -r 'del(.GH_TOKEN)|del(.[] | select(. == ""))|to_entries|map("\(.key)=\(.value|tostring)")|.[]' ); do
             echo $s >> .github_env
           done
           gh variable set --env ${{ env.PR_ID }} --env-file .github_env
