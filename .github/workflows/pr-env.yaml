@@ -107,6 +107,10 @@ jobs:
           echo "env: ${{ env.does_this_work }}"
           echo "vars: ${{ vars.does_this_work }}"
 
+      - name: Handle blank Github environment variable
+        run: |
+          echo "intentionally_left_blank=" >> $GITHUB_ENV
+
       - name: Use $GITHUB_ENV to update the Github environment
         env:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
